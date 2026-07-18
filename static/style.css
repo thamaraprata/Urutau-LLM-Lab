@@ -1,0 +1,424 @@
+/* =================================================================
+   UrutauLLM-Lab - Tema Joker
+   Cores: roxo profundo (#A855F7), verde (#10B981), amarelo (#FACC15)
+   Fundo escuro, alto contraste
+   ================================================================= */
+
+:root {
+    --joker-purple: #A855F7;
+    --joker-purple-dark: #6B21A8;
+    --joker-purple-deep: #1A0A2E;
+    --joker-green: #10B981;
+    --joker-green-bright: #22C55E;
+    --joker-yellow: #FACC15;
+    --joker-red: #EF4444;
+
+    --bg-dark: #0A0A0F;
+    --bg-card: #14141E;
+    --bg-card-hover: #1E1E2E;
+
+    --text-primary: #F5F5F5;
+    --text-secondary: #C5C5C5;
+    --text-muted: #888;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* =================================================================
+   Banner de construção (topo da página)
+   ================================================================= */
+
+.construction-banner {
+    background: linear-gradient(90deg, var(--joker-purple-dark), var(--joker-purple), var(--joker-green));
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--joker-yellow);
+}
+
+.construction-banner a {
+    color: var(--joker-yellow);
+    text-decoration: underline;
+    margin-left: 8px;
+}
+
+.construction-banner a:hover {
+    color: white;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--joker-purple-deep) 0%, #16213e 100%);
+    border-radius: 12px;
+    border: 1px solid var(--joker-purple);
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 30px,
+        rgba(168, 85, 247, 0.05) 30px,
+        rgba(168, 85, 247, 0.05) 60px
+    );
+    pointer-events: none;
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: var(--joker-yellow);
+    margin-bottom: 5px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+header h1 .green { color: var(--joker-green); }
+header h1 .purple { color: var(--joker-purple); }
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    position: relative;
+    z-index: 1;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* =================================================================
+   Sidebar de Challenges
+   ================================================================= */
+
+.sidebar {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-y: auto;
+    border: 1px solid #2a2a2a;
+}
+
+.sidebar h2 {
+    color: var(--joker-yellow);
+    margin-bottom: 16px;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar h2::before {
+    content: "🎯";
+}
+
+.challenge-card {
+    background: var(--bg-dark);
+    border: 2px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.challenge-card:hover {
+    border-color: var(--joker-purple);
+    transform: translateX(4px);
+}
+
+.challenge-card.active {
+    border-color: var(--joker-purple);
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--joker-purple-deep) 100%);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+.challenge-card h3 {
+    color: var(--joker-yellow);
+    font-size: 1em;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.difficulty {
+    color: #ffd700;
+    font-size: 0.85em;
+}
+
+.owasp {
+    color: var(--joker-green);
+    font-size: 0.8em;
+    font-family: "SF Mono", Monaco, monospace;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.description {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+/* Status badges dos challenges */
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-left: 8px;
+}
+
+.status-ready { background: var(--joker-green); color: var(--bg-dark); }
+.status-wip { background: var(--joker-yellow); color: var(--bg-dark); }
+.status-planned { background: var(--text-muted); color: var(--bg-dark); }
+
+/* =================================================================
+   Área de Chat
+   ================================================================= */
+
+.chat-area {
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #2a2a2a;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a2a2a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--joker-purple-deep);
+}
+
+.chat-header h2 {
+    color: var(--joker-yellow);
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    padding: 7px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--joker-purple);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--joker-purple-dark);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+}
+
+.btn-secondary {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    border: 1px solid var(--joker-green);
+}
+
+.btn-secondary:hover {
+    background: var(--joker-green);
+    color: var(--bg-dark);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    padding: 12px 16px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    line-height: 1.5;
+    animation: messageIn 0.3s ease;
+}
+
+@keyframes messageIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user {
+    background: linear-gradient(135deg, #2a4a7e, #1e3a5f);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.message.bot {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    border: 1px solid var(--joker-purple);
+}
+
+.message.system {
+    background: var(--joker-purple-deep);
+    color: var(--joker-yellow);
+    align-self: center;
+    text-align: center;
+    font-size: 0.85em;
+    max-width: 90%;
+    border: 1px solid var(--joker-purple);
+}
+
+.chat-input-area {
+    padding: 16px 20px;
+    border-top: 1px solid #2a2a2a;
+    display: flex;
+    gap: 10px;
+    background: var(--bg-dark);
+}
+
+#user-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 1em;
+    font-family: inherit;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: var(--joker-purple);
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+
+.flag-banner {
+    background: linear-gradient(90deg, var(--joker-green), var(--joker-green-bright));
+    color: var(--bg-dark);
+    padding: 12px;
+    margin: 0 20px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    animation: flagPulse 0.6s ease-in-out;
+}
+
+.flag-banner.hidden {
+    display: none;
+}
+
+@keyframes flagPulse {
+    0% { transform: scale(0.9); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* =================================================================
+   Scrollbar customizada
+   ================================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--joker-purple-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--joker-purple);
+}
+
+/* =================================================================
+   Responsivo
+   ================================================================= */
+
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        max-height: 280px;
+    }
+    .container {
+        height: auto;
+        min-height: 100vh;
+    }
+    body {
+        overflow: auto;
+    }
+}

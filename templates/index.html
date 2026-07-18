@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦉 UrutauLLM-Lab · Laboratório de LLM Security</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Banner de "em construção" -->
+    <div class="construction-banner">
+        🚧 Projeto nascendo agora. Esqueleto pronto, challenges em construção.
+        <a href="https://github.com/thamaraprata/Urutau-LLM-Lab" target="_blank">
+            ⭐ Star no GitHub · Contribua!
+        </a>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🦉 Urutau<span class="purple">LLM</span>-<span class="green">Lab</span></h1>
+            <p class="subtitle">Laboratório CTF-style para aprender LLM Security na prática</p>
+        </header>
+
+        <main>
+            <aside class="sidebar">
+                <h2>Challenges</h2>
+                <div id="challenges-list">
+                    {% for challenge in challenges %}
+                    <div class="challenge-card" data-challenge-id="{{ challenge.id }}">
+                        <h3>
+                            <span class="difficulty">{{ challenge.difficulty }}</span>
+                            {{ challenge.name }}
+                            {% if challenge.status == 'ready' %}
+                                <span class="status-badge status-ready">PRONTO</span>
+                            {% elif challenge.status == 'wip' %}
+                                <span class="status-badge status-wip">EM ANDAMENTO</span>
+                            {% else %}
+                                <span class="status-badge status-planned">PLANEJADO</span>
+                            {% endif %}
+                        </h3>
+                        <p class="owasp">{{ challenge.owasp }}</p>
+                        <p class="description">{{ challenge.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </aside>
+
+            <section class="chat-area">
+                <div class="chat-header">
+                    <h2 id="current-challenge-name">Chat Livre</h2>
+                    <div class="actions">
+                        <button id="hint-btn" class="btn btn-secondary">💡 Dica</button>
+                        <button id="writeup-btn" class="btn btn-secondary">📖 Write-up</button>
+                    </div>
+                </div>
+
+                <div id="chat-messages" class="chat-messages">
+                    <div class="message system">
+                        <p>👋 Bem-vindo ao <strong>UrutauLLM-Lab</strong>!</p>
+                        <p>🚧 Este projeto está nascendo agora. O esqueleto está funcional e há 2 challenges protótipo. Mais estão em construção.</p>
+                        <p>👥 Quer contribuir? <a href="https://github.com/thamaraprata/Urutau-LLM-Lab/issues" target="_blank" style="color: var(--joker-yellow);">Veja as issues abertas no GitHub</a></p>
+                    </div>
+                </div>
+
+                <div id="flag-banner" class="flag-banner hidden">
+                    <p>🏆 <strong>FLAG ENCONTRADA!</strong> Você completou o challenge!</p>
+                </div>
+
+                <div class="chat-input-area">
+                    <input
+                        type="text"
+                        id="user-input"
+                        placeholder="Digite sua mensagem..."
+                        autocomplete="off"
+                    />
+                    <button id="send-btn" class="btn btn-primary">Enviar</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
