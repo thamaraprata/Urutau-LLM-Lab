@@ -37,6 +37,30 @@ llm_client = LLMClient()
 challenge_manager = ChallengeManager()
 
 
+@app.after_request
+def add_security_headers(response):
+    """Headers de segurança HTTP (defense-in-depth).
+
+    Nota didática: a app renderiza respostas do LLM via textContent (não
+    innerHTML), então não há XSS refletido no front — mas uma CSP estrita é a
+    rede de segurança contra improper output handling (ver challenge 05). O
+    front é 100% same-origin (CSS/JS em /static), logo default-src 'self' basta.
+    """
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; script-src 'self'; style-src 'self'; "
+        "img-src 'self' data:; connect-src 'self'; object-src 'none'; "
+        "base-uri 'self'; frame-ancestors 'none'"
+    )
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=31536000; includeSubDomains"
+    )
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    return response
+
+
 @app.route("/")
 def index():
     """Página principal com chat e lista de challenges."""

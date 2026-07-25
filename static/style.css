@@ -422,3 +422,8 @@ main {
         overflow: auto;
     }
 }
+
+/* moved from an inline style attribute so the strict CSP (style-src 'self') holds */
+.link-yellow {
+    color: var(--joker-yellow);
+}
