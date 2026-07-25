@@ -25,7 +25,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python tests/test_challenges.py
+        pytest tests/ -v
 
     - name: Lint
       run: |
