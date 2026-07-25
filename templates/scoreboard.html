@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Scoreboard · UrutauLLM-Lab</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Scoreboard</h1>
+            <p class="subtitle"><a href="/" class="link-yellow">← voltar ao lab</a></p>
+        </header>
+
+        <main>
+            <section class="board-panel">
+                {% if scoreboard %}
+                <table class="scoreboard">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jogador</th>
+                            <th>Challenges resolvidos</th>
+                            <th>Tempo total (s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in scoreboard %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ row.username }}</td>
+                            <td>{{ row.solved }}</td>
+                            <td>{{ row.total_seconds }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>Ninguém pontuou ainda. Entre com um apelido, resolva um challenge
+                   e apareça aqui. 🦉</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

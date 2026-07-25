@@ -166,6 +166,14 @@ def chat():
         if challenge and "flag_pattern" in challenge:
             flag_found = challenge["flag_pattern"].lower() in response.lower()
 
+        # Registra a tentativa (scoreboard #5 / métricas #9). Ignora o chat
+        # livre (00). user_id é NULL quando anônimo.
+        if challenge and challenge_id != "00":
+            try:
+                db.record_attempt(session.get("user_id"), challenge_id, flag_found)
+            except Exception as e:  # telemetria nunca derruba o chat
+                logger.warning(f"Falha ao registrar tentativa: {e}")
+
         return jsonify(
             {
                 "response": response,
@@ -184,6 +192,18 @@ def chat():
 def list_challenges():
     """Lista todos os challenges disponíveis."""
     return jsonify(challenge_manager.list_challenges())
+
+
+@app.route("/api/scoreboard", methods=["GET"])
+def api_scoreboard():
+    """Ranking global (derivado das tentativas)."""
+    return jsonify(db.scoreboard())
+
+
+@app.route("/scoreboard")
+def scoreboard_page():
+    """Página do scoreboard."""
+    return render_template("scoreboard.html", scoreboard=db.scoreboard())
 
 
 @app.route("/api/challenges/<challenge_id>/hint", methods=["GET"])

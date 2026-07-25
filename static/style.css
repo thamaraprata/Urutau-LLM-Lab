@@ -452,3 +452,19 @@ main {
     color: #111;
     cursor: pointer;
 }
+
+/* scoreboard (#5) */
+.board-panel { padding: 1rem; }
+table.scoreboard {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+table.scoreboard th,
+table.scoreboard td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #2a2a2a;
+}
+table.scoreboard th { color: var(--joker-yellow); }
+table.scoreboard tr:first-child td { font-weight: bold; }
