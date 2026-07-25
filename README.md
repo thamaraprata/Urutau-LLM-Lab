@@ -8,6 +8,11 @@
 [![Ollama](https://img.shields.io/badge/LLM-Ollama-purple.svg)](https://ollama.com/)
 [![OWASP](https://img.shields.io/badge/OWASP-LLM%20Top%2010-red.svg)](https://genai.owasp.org/llm-top-10/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![CI](https://github.com/thamaraprata/Urutau-LLM-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/thamaraprata/Urutau-LLM-Lab/actions/workflows/ci.yml)
+[![Open issues](https://img.shields.io/github/issues/thamaraprata/Urutau-LLM-Lab.svg)](https://github.com/thamaraprata/Urutau-LLM-Lab/issues)
+[![Last commit](https://img.shields.io/github/last-commit/thamaraprata/Urutau-LLM-Lab.svg)](https://github.com/thamaraprata/Urutau-LLM-Lab/commits)
+[![Repo size](https://img.shields.io/github/repo-size/thamaraprata/Urutau-LLM-Lab.svg)](https://github.com/thamaraprata/Urutau-LLM-Lab)
+[![Stars](https://img.shields.io/github/stars/thamaraprata/Urutau-LLM-Lab.svg?style=social)](https://github.com/thamaraprata/Urutau-LLM-Lab/stargazers)
 
 > **⚠️ Status do projeto:** 🚧 Esqueleto funcional, challenges em construção. Veja [`ROADMAP.md`](docs/ROADMAP.md) e [issues abertas](https://github.com/thamaraprata/Urutau-LLM-Lab/issues) para saber o que falta.
 
