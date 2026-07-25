@@ -206,12 +206,42 @@ def scoreboard_page():
     return render_template("scoreboard.html", scoreboard=db.scoreboard())
 
 
+@app.route("/api/stats/<challenge_id>", methods=["GET"])
+def api_stats(challenge_id):
+    """Métricas de qualidade de um challenge (#9)."""
+    if not challenge_manager.get_challenge(challenge_id):
+        return jsonify({"error": "Challenge não encontrado"}), 404
+    return jsonify(db.challenge_stats(challenge_id))
+
+
+@app.route("/dashboard")
+def dashboard_page():
+    """Dashboard de qualidade dos challenges (taxa de sucesso, desistência...)."""
+    stats = []
+    for c in challenge_manager.list_challenges():
+        if c["id"] == "00":
+            continue
+        s = db.challenge_stats(c["id"])
+        s["name"] = c["name"]
+        s["owasp"] = c["owasp"]
+        # largura da barra (%) pré-calculada pro SVG (CSP-safe, sem JS externo)
+        s["success_pct"] = round(s["success_rate"] * 100)
+        stats.append(s)
+    return render_template("dashboard.html", stats=stats)
+
+
 @app.route("/api/challenges/<challenge_id>/hint", methods=["GET"])
 def get_hint(challenge_id):
     """Retorna uma dica para o challenge."""
     challenge = challenge_manager.get_challenge(challenge_id)
     if not challenge:
         return jsonify({"error": "Challenge não encontrado"}), 404
+    # Registra o uso de dica (métrica de qualidade #9)
+    if challenge_id != "00":
+        try:
+            db.record_hint_view(session.get("user_id"), challenge_id)
+        except Exception as e:
+            logger.warning(f"Falha ao registrar hint view: {e}")
     return jsonify({"hint": challenge.get("hint", "Sem dica disponível")})
 
 

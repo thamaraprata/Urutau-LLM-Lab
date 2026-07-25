@@ -468,3 +468,6 @@ table.scoreboard td {
 }
 table.scoreboard th { color: var(--joker-yellow); }
 table.scoreboard tr:first-child td { font-weight: bold; }
+
+/* dashboard utility (#9) */
+.mt-1 { margin-top: 1rem; }
