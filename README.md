@@ -44,11 +44,14 @@ Cada challenge é um chatbot com uma **vulnerabilidade plantada** (prompt inject
 | Challenge 05 (Output Injection) | ✅ Pronto | LLM05: Improper Output Handling |
 | Challenge 06 (Supply Chain) | ✅ Pronto | LLM03: Supply Chain |
 | Challenges 07-08 | 📋 Planejados | LLM09, LLM10 |
-| Scoreboard | 📋 Planejado | Persistência de progresso |
+| Scoreboard | ✅ Funcional | SQLite + `/scoreboard`, ranking |
+| Auth (sessão) | ✅ Funcional | login por apelido, `/login` `/logout` |
+| Métricas de qualidade | ✅ Funcional | `/dashboard` + `/api/stats/<id>` |
+| Headers de segurança | ✅ Funcional | CSP, HSTS, X-Frame-Options... |
 | API rate limiting | 📋 Planejado | Proteção contra abuse |
-| Testes automatizados | 🚧 Parcial | test_challenges.py |
-| CI/CD | 📋 Planejado | GitHub Actions melhorado |
-| Tradução EN | 📋 Planejado | Welcome contributors! |
+| Testes automatizados | ✅ Funcional | unit + integração (pytest) |
+| CI/CD | ✅ Funcional | GitHub Actions roda pytest |
+| Tradução EN | ✅ Disponível | [`README.en.md`](README.en.md) |
 
 **Veja as [issues abertas](https://github.com/thamaraprata/Urutau-LLM-Lab/issues) para contribuir.**
 
@@ -97,13 +100,13 @@ LLM_PROVIDER=openai docker compose up -d
 | 01 | Bypass Básico | LLM01: Prompt Injection | ✅ Pronto | ⭐ |
 | 02 | Vazamento de System Prompt | LLM07: System Prompt Leakage | ✅ Pronto | ⭐ |
 | 03 | Agente Rebelde | LLM06: Excessive Agency | 🚧 Em construção | ⭐⭐ |
-| 04 | Data Exfiltration | LLM02: Sensitive Information Disclosure | 📋 Planejado | ⭐⭐ |
-| 05 | Output Injection | LLM05: Improper Output Handling | 📋 Planejado | ⭐⭐⭐ |
-| 06 | Supply Chain Attack | LLM03: Supply Chain | 📋 Planejado | ⭐⭐⭐ |
+| 04 | Data Exfiltration | LLM02: Sensitive Information Disclosure | ✅ Pronto | ⭐⭐ |
+| 05 | Output Injection | LLM05: Improper Output Handling | ✅ Pronto | ⭐⭐⭐ |
+| 06 | Supply Chain Attack | LLM03: Supply Chain | ✅ Pronto | ⭐⭐⭐ |
 | 07 | Misinformation | LLM09: Misinformation | 📋 Planejado | ⭐⭐ |
 | 08 | Unbounded Consumption | LLM10: Unbounded Consumption | 📋 Planejado | ⭐ |
 
-**Total:** 2 prontos + 1 em construção + 6 planejados = **9 challenges planejados** cobrindo o OWASP LLM Top 10.
+**Total:** 6 prontos (inclui o Chat Livre) + 1 em construção + 2 planejados = **9 challenges** cobrindo o OWASP LLM Top 10.
 
 ---
 
