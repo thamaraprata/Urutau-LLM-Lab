@@ -35,7 +35,10 @@ Cada challenge é um chatbot com uma **vulnerabilidade plantada** (prompt inject
 | Challenge 01 (Bypass Básico) | ✅ Pronto | LLM01: Prompt Injection |
 | Challenge 02 (Vazamento SP) | ✅ Pronto | LLM07: System Prompt Leakage |
 | Challenge 03 (Agente Rebelde) | 🚧 Em construção | LLM06: Excessive Agency |
-| Challenges 04-08 | 📋 Planejados | LLM02, LLM05, LLM03, LLM09, LLM10 |
+| Challenge 04 (Data Exfiltration) | ✅ Pronto | LLM02: Sensitive Information Disclosure |
+| Challenge 05 (Output Injection) | ✅ Pronto | LLM05: Improper Output Handling |
+| Challenge 06 (Supply Chain) | ✅ Pronto | LLM03: Supply Chain |
+| Challenges 07-08 | 📋 Planejados | LLM09, LLM10 |
 | Scoreboard | 📋 Planejado | Persistência de progresso |
 | API rate limiting | 📋 Planejado | Proteção contra abuse |
 | Testes automatizados | 🚧 Parcial | test_challenges.py |
