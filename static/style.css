@@ -427,3 +427,28 @@ main {
 .link-yellow {
     color: var(--joker-yellow);
 }
+
+/* auth bar (#7) */
+.auth-bar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+.auth-bar input {
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #111;
+    color: #eee;
+}
+.auth-bar button {
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    border: none;
+    background: var(--joker-yellow);
+    color: #111;
+    cursor: pointer;
+}

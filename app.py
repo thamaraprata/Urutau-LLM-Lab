@@ -5,6 +5,7 @@ Lab de LLM Security com challenges CTF-style.
 
 import os
 import logging
+from functools import wraps
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 
 from llm.client import LLMClient
 from llm.challenges import ChallengeManager
+from llm import db
 
 # Carrega variáveis de ambiente
 load_dotenv()
@@ -35,6 +37,22 @@ CORS(app)
 # Inicializa clientes
 llm_client = LLMClient()
 challenge_manager = ChallengeManager()
+
+# Inicializa a camada de persistência (SQLite: users/attempts/hint_views)
+db.init_app(app)
+
+
+def login_required(f):
+    """Middleware de auth para endpoints sensíveis (ex.: admin/criação de
+    challenges). Auth aqui é username-only, pensada pra workshops/demos."""
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get("user_id"):
+            return jsonify({"error": "Autenticação necessária"}), 401
+        return f(*args, **kwargs)
+
+    return wrapper
 
 
 @app.after_request
@@ -78,6 +96,39 @@ def health():
             "llm_provider": os.getenv("LLM_PROVIDER", "ollama"),
         }
     )
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    """Login leve por username (sem senha) — pra workshops e scoreboard."""
+    data = request.get_json(silent=True) or request.form
+    username = (data.get("username") or "").strip()
+    if not username or len(username) > 32:
+        return jsonify({"error": "username inválido (1-32 chars)"}), 400
+    try:
+        user = db.get_or_create_user(username)
+    except ValueError:
+        return jsonify({"error": "username inválido"}), 400
+    session["user_id"] = user["id"]
+    session["username"] = user["username"]
+    logger.info(f"Login: {user['username']} (id={user['id']})")
+    return jsonify({"username": user["username"], "id": user["id"]})
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"status": "logged_out"})
+
+
+@app.route("/api/me", methods=["GET"])
+def me():
+    """Usuário atual da sessão (ou null) — usado pela UI."""
+    if session.get("user_id"):
+        return jsonify(
+            {"username": session.get("username"), "id": session.get("user_id")}
+        )
+    return jsonify({"username": None, "id": None})
 
 
 @app.route("/api/chat", methods=["POST"])

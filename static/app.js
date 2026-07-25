@@ -6,7 +6,57 @@ let isWaiting = false;
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     setupChallengeCards();
+    setupAuth();
+    refreshAuth();
 });
+
+function setupAuth() {
+    document.getElementById('login-btn').addEventListener('click', doLogin);
+    document.getElementById('logout-btn').addEventListener('click', doLogout);
+    document.getElementById('login-username').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doLogin();
+    });
+}
+
+async function refreshAuth() {
+    try {
+        const res = await fetch('/api/me');
+        const me = await res.json();
+        renderAuth(me.username);
+    } catch (_) { /* offline is fine */ }
+}
+
+function renderAuth(username) {
+    const out = document.getElementById('auth-logged-out');
+    const inn = document.getElementById('auth-logged-in');
+    if (username) {
+        document.getElementById('auth-username').textContent = username;
+        out.hidden = true;
+        inn.hidden = false;
+    } else {
+        out.hidden = false;
+        inn.hidden = true;
+    }
+}
+
+async function doLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    if (!username) return;
+    const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+    });
+    if (res.ok) {
+        const data = await res.json();
+        renderAuth(data.username);
+    }
+}
+
+async function doLogout() {
+    await fetch('/logout', { method: 'POST' });
+    renderAuth(null);
+}
 
 function setupEventListeners() {
     const sendBtn = document.getElementById('send-btn');

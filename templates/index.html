@@ -19,6 +19,17 @@
         <header>
             <h1>🦉 Urutau<span class="purple">LLM</span>-<span class="green">Lab</span></h1>
             <p class="subtitle">Laboratório CTF-style para aprender LLM Security na prática</p>
+            <div class="auth-bar">
+                <a href="/scoreboard" class="link-yellow">🏆 Scoreboard</a>
+                <span id="auth-logged-out">
+                    <input type="text" id="login-username" maxlength="32" placeholder="seu apelido" autocomplete="off">
+                    <button id="login-btn">Entrar</button>
+                </span>
+                <span id="auth-logged-in" hidden>
+                    👤 <strong id="auth-username"></strong>
+                    <button id="logout-btn">Sair</button>
+                </span>
+            </div>
         </header>
 
         <main>
