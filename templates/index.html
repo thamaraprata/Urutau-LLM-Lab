@@ -19,6 +19,18 @@
         <header>
             <h1>🦉 Urutau<span class="purple">LLM</span>-<span class="green">Lab</span></h1>
             <p class="subtitle">Laboratório CTF-style para aprender LLM Security na prática</p>
+            <div class="auth-bar">
+                <a href="/scoreboard" class="link-yellow">🏆 Scoreboard</a>
+                <a href="/dashboard" class="link-yellow">📊 Métricas</a>
+                <span id="auth-logged-out">
+                    <input type="text" id="login-username" maxlength="32" placeholder="seu apelido" autocomplete="off">
+                    <button id="login-btn">Entrar</button>
+                </span>
+                <span id="auth-logged-in" hidden>
+                    👤 <strong id="auth-username"></strong>
+                    <button id="logout-btn">Sair</button>
+                </span>
+            </div>
         </header>
 
         <main>
@@ -58,7 +70,7 @@
                     <div class="message system">
                         <p>👋 Bem-vindo ao <strong>UrutauLLM-Lab</strong>!</p>
                         <p>🚧 Este projeto está nascendo agora. O esqueleto está funcional e há 2 challenges protótipo. Mais estão em construção.</p>
-                        <p>👥 Quer contribuir? <a href="https://github.com/thamaraprata/Urutau-LLM-Lab/issues" target="_blank" style="color: var(--joker-yellow);">Veja as issues abertas no GitHub</a></p>
+                        <p>👥 Quer contribuir? <a href="https://github.com/thamaraprata/Urutau-LLM-Lab/issues" target="_blank" class="link-yellow">Veja as issues abertas no GitHub</a></p>
                     </div>
                 </div>
 

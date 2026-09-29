@@ -5,6 +5,7 @@ Lab de LLM Security com challenges CTF-style.
 
 import os
 import logging
+from functools import wraps
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 
 from llm.client import LLMClient
 from llm.challenges import ChallengeManager
+from llm import db
 
 # Carrega variáveis de ambiente
 load_dotenv()
@@ -36,6 +38,46 @@ CORS(app)
 llm_client = LLMClient()
 challenge_manager = ChallengeManager()
 
+# Inicializa a camada de persistência (SQLite: users/attempts/hint_views)
+db.init_app(app)
+
+
+def login_required(f):
+    """Middleware de auth para endpoints sensíveis (ex.: admin/criação de
+    challenges). Auth aqui é username-only, pensada pra workshops/demos."""
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get("user_id"):
+            return jsonify({"error": "Autenticação necessária"}), 401
+        return f(*args, **kwargs)
+
+    return wrapper
+
+
+@app.after_request
+def add_security_headers(response):
+    """Headers de segurança HTTP (defense-in-depth).
+
+    Nota didática: a app renderiza respostas do LLM via textContent (não
+    innerHTML), então não há XSS refletido no front — mas uma CSP estrita é a
+    rede de segurança contra improper output handling (ver challenge 05). O
+    front é 100% same-origin (CSS/JS em /static), logo default-src 'self' basta.
+    """
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; script-src 'self'; style-src 'self'; "
+        "img-src 'self' data:; connect-src 'self'; object-src 'none'; "
+        "base-uri 'self'; frame-ancestors 'none'"
+    )
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=31536000; includeSubDomains"
+    )
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    return response
+
 
 @app.route("/")
 def index():
@@ -54,6 +96,39 @@ def health():
             "llm_provider": os.getenv("LLM_PROVIDER", "ollama"),
         }
     )
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    """Login leve por username (sem senha) — pra workshops e scoreboard."""
+    data = request.get_json(silent=True) or request.form
+    username = (data.get("username") or "").strip()
+    if not username or len(username) > 32:
+        return jsonify({"error": "username inválido (1-32 chars)"}), 400
+    try:
+        user = db.get_or_create_user(username)
+    except ValueError:
+        return jsonify({"error": "username inválido"}), 400
+    session["user_id"] = user["id"]
+    session["username"] = user["username"]
+    logger.info(f"Login: {user['username']} (id={user['id']})")
+    return jsonify({"username": user["username"], "id": user["id"]})
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"status": "logged_out"})
+
+
+@app.route("/api/me", methods=["GET"])
+def me():
+    """Usuário atual da sessão (ou null) — usado pela UI."""
+    if session.get("user_id"):
+        return jsonify(
+            {"username": session.get("username"), "id": session.get("user_id")}
+        )
+    return jsonify({"username": None, "id": None})
 
 
 @app.route("/api/chat", methods=["POST"])
@@ -91,6 +166,14 @@ def chat():
         if challenge and "flag_pattern" in challenge:
             flag_found = challenge["flag_pattern"].lower() in response.lower()
 
+        # Registra a tentativa (scoreboard #5 / métricas #9). Ignora o chat
+        # livre (00). user_id é NULL quando anônimo.
+        if challenge and challenge_id != "00":
+            try:
+                db.record_attempt(session.get("user_id"), challenge_id, flag_found)
+            except Exception as e:  # telemetria nunca derruba o chat
+                logger.warning(f"Falha ao registrar tentativa: {e}")
+
         return jsonify(
             {
                 "response": response,
@@ -111,12 +194,54 @@ def list_challenges():
     return jsonify(challenge_manager.list_challenges())
 
 
+@app.route("/api/scoreboard", methods=["GET"])
+def api_scoreboard():
+    """Ranking global (derivado das tentativas)."""
+    return jsonify(db.scoreboard())
+
+
+@app.route("/scoreboard")
+def scoreboard_page():
+    """Página do scoreboard."""
+    return render_template("scoreboard.html", scoreboard=db.scoreboard())
+
+
+@app.route("/api/stats/<challenge_id>", methods=["GET"])
+def api_stats(challenge_id):
+    """Métricas de qualidade de um challenge (#9)."""
+    if not challenge_manager.get_challenge(challenge_id):
+        return jsonify({"error": "Challenge não encontrado"}), 404
+    return jsonify(db.challenge_stats(challenge_id))
+
+
+@app.route("/dashboard")
+def dashboard_page():
+    """Dashboard de qualidade dos challenges (taxa de sucesso, desistência...)."""
+    stats = []
+    for c in challenge_manager.list_challenges():
+        if c["id"] == "00":
+            continue
+        s = db.challenge_stats(c["id"])
+        s["name"] = c["name"]
+        s["owasp"] = c["owasp"]
+        # largura da barra (%) pré-calculada pro SVG (CSP-safe, sem JS externo)
+        s["success_pct"] = round(s["success_rate"] * 100)
+        stats.append(s)
+    return render_template("dashboard.html", stats=stats)
+
+
 @app.route("/api/challenges/<challenge_id>/hint", methods=["GET"])
 def get_hint(challenge_id):
     """Retorna uma dica para o challenge."""
     challenge = challenge_manager.get_challenge(challenge_id)
     if not challenge:
         return jsonify({"error": "Challenge não encontrado"}), 404
+    # Registra o uso de dica (métrica de qualidade #9)
+    if challenge_id != "00":
+        try:
+            db.record_hint_view(session.get("user_id"), challenge_id)
+        except Exception as e:
+            logger.warning(f"Falha ao registrar hint view: {e}")
     return jsonify({"hint": challenge.get("hint", "Sem dica disponível")})
 
 

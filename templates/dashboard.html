@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard de Qualidade · UrutauLLM-Lab</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Qualidade dos Challenges</h1>
+            <p class="subtitle">
+                <a href="/" class="link-yellow">← voltar ao lab</a> ·
+                <a href="/scoreboard" class="link-yellow">🏆 scoreboard</a>
+            </p>
+            <p class="subtitle">
+                Data science aplicado à educação: taxa de sucesso, desistência,
+                tentativas até resolver e uso de dicas — pra achar challenges
+                mal calibrados (fáceis demais / difíceis demais).
+            </p>
+        </header>
+
+        <main>
+            <section class="board-panel">
+                <table class="scoreboard">
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>OWASP</th>
+                            <th>Taxa de sucesso</th>
+                            <th>Tentativas</th>
+                            <th>Jogadores</th>
+                            <th>Resolveram</th>
+                            <th>Desistência</th>
+                            <th>Média tent./solve</th>
+                            <th>Dicas vistas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in stats %}
+                        <tr>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.owasp }}</td>
+                            <td>
+                                <!-- barra SVG inline: CSP-safe, sem JS externo -->
+                                <svg width="140" height="16" role="img"
+                                     aria-label="{{ s.success_pct }}% de sucesso">
+                                    <rect x="0" y="0" width="140" height="16" rx="3" fill="#2a2a2a"/>
+                                    <rect x="0" y="0" width="{{ (s.success_pct * 1.4)|round(1) }}"
+                                          height="16" rx="3" fill="#51cf66"/>
+                                    <text x="70" y="12" font-size="10"
+                                          text-anchor="middle" fill="#eee">{{ s.success_pct }}%</text>
+                                </svg>
+                            </td>
+                            <td>{{ s.total_attempts }}</td>
+                            <td>{{ s.unique_users }}</td>
+                            <td>{{ s.solvers }}</td>
+                            <td>{{ (s.abandonment_rate * 100)|round }}%</td>
+                            <td>{{ s.avg_attempts_to_solve if s.avg_attempts_to_solve is not none else '—' }}</td>
+                            <td>{{ s.hint_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p class="subtitle mt-1">
+                    Sem dados ainda? Entre com um apelido e jogue alguns challenges —
+                    as métricas aparecem aqui. Endpoint bruto:
+                    <code>/api/stats/&lt;challenge_id&gt;</code>.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
